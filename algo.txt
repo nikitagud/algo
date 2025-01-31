@@ -1,0 +1,76 @@
+def modular_inverse(a, p):
+    """
+    ფერმას მცირე თეორემის გამოყენებით ვპოულობთ a^-1 mod p-ს
+    p უნდა იყოს მარტივი
+    """
+    return pow(a, p - 2, p)
+
+
+def is_prime_fermat(n, k=5):
+    """
+    ფერმას მცირე თეორემის გამოყენებით ვამოწმებთ, არის თუ არა n მარტივი.
+    k არის ტესტების რაოდენობა.
+    """
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    
+    import random
+    for _ in range(k):
+        a = random.randint(2, n - 2)
+        if pow(a, n - 1, n) != 1:
+            return False
+    return True
+
+
+def evaluate_postfix(expression):
+    """
+    პოსტფიქსური (რევერსული პოლონური) გამოთვლის ფუნქცია
+    """
+    stack = []
+    for token in expression.split():
+        if token.isdigit():
+            stack.append(int(token))
+        else:
+            b = stack.pop()
+            a = stack.pop()
+            if token == '+':
+                stack.append(a + b)
+            elif token == '-':
+                stack.append(a - b)
+            elif token == '*':
+                stack.append(a * b)
+            elif token == '/':
+                stack.append(a / b)
+    return stack[0]
+
+
+def evaluate_prefix(expression):
+    """
+    პრეფიქსური (პოლონური) გამოთვლის ფუნქცია
+    """
+    stack = []
+    tokens = expression.split()[::-1]
+    for token in tokens:
+        if token.isdigit():
+            stack.append(int(token))
+        else:
+            a = stack.pop()
+            b = stack.pop()
+            if token == '+':
+                stack.append(a + b)
+            elif token == '-':
+                stack.append(a - b)
+            elif token == '*':
+                stack.append(a * b)
+            elif token == '/':
+                stack.append(a / b)
+    return stack[0]
+
+
+# ტესტის მაგალითები
+print(modular_inverse(3, 7))  # 3^-1 mod 7
+print(is_prime_fermat(17))  # 17 მარტივია?
+print(evaluate_postfix("3 4 + 2 *"))  # (3 + 4) * 2
+print(evaluate_prefix("* + 3 4 2"))  # (3 + 4) * 2
